@@ -1,0 +1,51 @@
+package com.mounika.careerai.controller;
+
+import org.springframework.web.bind.annotation.*;
+import java.util.*;
+
+import com.mounika.careerai.dto.RecommendationRequest;
+import com.mounika.careerai.model.Career;
+import com.mounika.careerai.model.Option;
+import com.mounika.careerai.repository.OptionRepository;
+
+@RestController
+@RequestMapping("/api/recommend")
+@CrossOrigin
+public class RecommendationController {
+
+    private final OptionRepository optionRepository;
+
+    public RecommendationController(OptionRepository optionRepository) {
+        this.optionRepository = optionRepository;
+    }
+
+    @PostMapping
+    public Career recommend(@RequestBody RecommendationRequest request) {
+
+        Map<Long, Integer> careerScores = new HashMap<>();
+
+        List<Option> selectedOptions = optionRepository.findAllById(request.getOptionIds());
+
+        for (Option option : selectedOptions) {
+
+            Long careerId = option.getCareer().getId();
+            int score = option.getScore();
+
+            careerScores.put(
+                    careerId,
+                    careerScores.getOrDefault(careerId, 0) + score
+            );
+        }
+
+        Long bestCareerId = Collections.max(
+                careerScores.entrySet(),
+                Map.Entry.comparingByValue()
+        ).getKey();
+
+        return selectedOptions.stream()
+                .filter(o -> o.getCareer().getId().equals(bestCareerId))
+                .findFirst()
+                .get()
+                .getCareer();
+    }
+}

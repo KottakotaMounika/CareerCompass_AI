@@ -1,0 +1,38 @@
+package com.mounika.careerai.model;
+
+import jakarta.persistence.*;
+import java.util.List;
+
+@Entity
+@Table(name = "questions")
+public class Question {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String questionText;
+
+    // One Question -> Many Options
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    private List<Option> options;
+
+    public Question() {}
+
+    public Question(Long id, String questionText) {
+        this.id = id;
+        this.questionText = questionText;
+    }
+
+    public Long getId() { return id; }
+
+    public String getQuestionText() { return questionText; }
+
+    public void setId(Long id) { this.id = id; }
+
+    public void setQuestionText(String questionText) { this.questionText = questionText; }
+
+    public List<Option> getOptions() { return options; }
+
+    public void setOptions(List<Option> options) { this.options = options; }
+}

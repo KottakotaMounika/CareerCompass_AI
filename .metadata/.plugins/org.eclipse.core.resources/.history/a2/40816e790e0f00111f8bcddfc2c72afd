@@ -1,0 +1,5 @@
+package com.mounika.careerai.Service;
+
+public class RecommendationService {
+
+}

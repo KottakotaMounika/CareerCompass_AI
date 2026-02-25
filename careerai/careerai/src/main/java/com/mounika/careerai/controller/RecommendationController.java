@@ -1,0 +1,29 @@
+package com.mounika.careerai.controller;
+
+import com.mounika.careerai.dto.RecommendationRequest;
+import com.mounika.careerai.dto.RecommendationResponse;
+import com.mounika.careerai.service.RecommendationService;
+
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api")
+@CrossOrigin
+public class RecommendationController {
+
+    private final RecommendationService recommendationService;
+
+    public RecommendationController(RecommendationService recommendationService) {
+        this.recommendationService = recommendationService;
+    }
+
+    @PostMapping("/recommend")
+    public RecommendationResponse recommend(
+            @RequestBody RecommendationRequest request) {
+
+        return recommendationService.recommend(
+                request.getUsername(),
+                request.getOptionIds()
+        );
+    }
+}

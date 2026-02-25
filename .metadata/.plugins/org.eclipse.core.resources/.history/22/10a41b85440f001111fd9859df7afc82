@@ -1,0 +1,60 @@
+package com.mounika.careerai.service;
+
+import com.mounika.careerai.model.Career;
+import com.mounika.careerai.model.Option;
+import com.mounika.careerai.repository.OptionRepository;
+import com.mounika.careerai.dto.RecommendationResponse;
+
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+
+@Service
+public class RecommendationService {
+
+    private final OptionRepository optionRepository;
+
+    public RecommendationService(OptionRepository optionRepository) {
+        this.optionRepository = optionRepository;
+    }
+
+    public RecommendationResponse recommend(List<Long> optionIds) {
+
+        Map<Career, Integer> careerScores = new HashMap<>();
+
+        for (Long optionId : optionIds) {
+            Option option = optionRepository.findById(optionId).orElseThrow();
+            Career career = option.getCareer();
+
+            careerScores.put(
+                career,
+                careerScores.getOrDefault(career, 0) + option.getScore()
+            );
+        }
+
+        List<Map.Entry<Career, Integer>> sortedCareers =
+                careerScores.entrySet()
+                        .stream()
+                        .sorted((a, b) -> b.getValue() - a.getValue())
+                        .toList();
+
+        RecommendationResponse response = new RecommendationResponse();
+
+        if (!sortedCareers.isEmpty()) {
+            response.setPrimaryCareer(sortedCareers.get(0).getKey());
+        }
+
+        if (sortedCareers.size() > 1) {
+            response.setSecondaryCareer(sortedCareers.get(1).getKey());
+        }
+
+        Map<String, Integer> breakdown = new HashMap<>();
+        for (Map.Entry<Career, Integer> entry : sortedCareers) {
+            breakdown.put(entry.getKey().getName(), entry.getValue());
+        }
+
+        response.setScoreBreakdown(breakdown);
+
+        return response;
+    }
+}

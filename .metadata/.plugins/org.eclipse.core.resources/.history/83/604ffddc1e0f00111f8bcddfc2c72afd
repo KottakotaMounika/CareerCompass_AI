@@ -1,0 +1,5 @@
+package com.mounika.careerai.model;
+
+public enum Role {
+
+}

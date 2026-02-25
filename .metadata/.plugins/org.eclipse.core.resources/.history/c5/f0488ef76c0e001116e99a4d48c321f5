@@ -1,0 +1,22 @@
+package controller;
+
+
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+import model.User;
+import repository.UserRepository;
+
+@RestController
+@RequestMapping("/api/users")
+@RequiredArgsConstructor
+@CrossOrigin
+public class UserController {
+
+    private final UserRepository userRepository = null;
+
+    @PostMapping
+    public User createUser(@RequestBody User user) {
+        return userRepository.save(user);
+    }
+}

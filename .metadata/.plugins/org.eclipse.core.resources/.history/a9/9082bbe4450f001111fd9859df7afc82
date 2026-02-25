@@ -1,0 +1,16 @@
+package com.mounika.careerai.dto;
+
+import java.util.List;
+
+public class RecommendationRequest {
+
+    private List<Long> optionIds;
+
+    public List<Long> getOptionIds() {
+        return optionIds;
+    }
+
+    public void setOptionIds(List<Long> optionIds) {
+        this.optionIds = optionIds;
+    }
+}

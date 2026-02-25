@@ -1,0 +1,5 @@
+package com.mounika.careerai.security;
+
+public class JwtFilter {
+
+}
